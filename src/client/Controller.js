@@ -20,7 +20,9 @@ export default class Controller {
     }
 
     fetchUsers() {
-        // fetch('')
+        fetch('/api/users')
+            .then((res) => res.json())
+            .then((users) => console.log(users));
     }
 
     initListerens() {
