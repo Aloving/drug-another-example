@@ -6,6 +6,8 @@
 }
 
 .panel-heading.is-info {
+    display: flex;
+    justify-content: space-between;
     background: hsl(204, 86%, 53%);
     color: #fff;
 }
@@ -21,6 +23,7 @@
 }
 
 .my-loader {
+    display: flex;
     justify-content: center;
 }
 
