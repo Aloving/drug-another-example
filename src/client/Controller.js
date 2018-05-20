@@ -7,58 +7,56 @@ import { debounce } from './helpers';
  * @param  {instance} view  Инстанс вью
  */
 export default class Controller {
-    constructor(model, view) {
-        this.model = model;
-        this.view = view;
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
 
-        this.onSearch = debounce(this.onSearch.bind(this), 250);
+    this.onSearch = debounce(this.onSearch.bind(this), 250);
 
-        this.initListerens();
-        this.init()
+    this.initListerens();
+    this.init()
+  }
+
+  init() {
+    const users = this.model.read('users');
+    this.view.init(users.length);
+    this.fetchUsers();
+  }
+
+  fetchUsers() {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(users => this.model.update('users', users));
+  }
+
+  onSearch({ target: { value } }) {
+    if (!value.length) {
+      this.view.filter([]);
+      return;
     }
 
-    init() {
-        const users = this.model.read('users');
-        this.view.init(users.length);
-        this.fetchUsers();
-    }
+    const filtered = this.model
+      .searchBy({
+        modelField: 'users',
+        searchField: 'name',
+        value,
+      })
+      .map(user => user.id);
 
-    fetchUsers() {
-        fetch('/api/users')
-            .then((res) => res.json())
-            .then((users) => this.model.update('users', users));
-    }
+    this.view.filter(filtered);
+    this.view.updateCounter(filtered.length);
+  }
 
-    onSearch(e) {
-        const value = e.target.value;
+  initListerens() {
+    this.model.on('updated', (users) => {
+      this.view.onUpdateList(users.length);
+      this.view.createUserList(users);
+    });
 
-        if (!value.length) {
-            this.view.filter([]);
-            return;
-        }
+    this.view.on('tryAgain', () => {
+      this.fetchUsers();
+    });
 
-        const filtered = this.model
-            .searchBy({
-                modelField: 'users',
-                searchField: 'name',
-                value
-            })
-            .map((user) => user.id);
-
-        this.view.filter(filtered);
-        this.view.updateCounter(filtered.length);
-    }
-
-    initListerens() {
-        this.model.on('updated', (users) => {
-            this.view.onUpdateList(users.length);
-            this.view.createUserList(users);
-        });
-
-        this.view.on('tryAgain', () => {
-            this.fetchUsers();
-        });
-
-        this.view.on('search', this.onSearch);
-    }
-};
+    this.view.on('search', this.onSearch);
+  }
+}

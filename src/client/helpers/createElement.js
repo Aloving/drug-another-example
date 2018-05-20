@@ -7,20 +7,20 @@
  * @return {type}         DOM элемент
  */
 export default function createElement(tag, props, ...children) {
-    const element = document.createElement(tag);
+  const element = document.createElement(tag);
 
-    Object.keys(props).forEach((key) => {
-        element[key] = props[key];
-    });
+  Object.keys(props).forEach((key) => {
+    element[key] = props[key];
+  });
 
-    children.forEach((child) => {
-        let localChild = child;
-        if (typeof child === 'string') {
-        localChild = document.createTextNode(child);
-        }
+  children.forEach((child) => {
+    let localChild = child;
+    if (typeof child === 'string') {
+      localChild = document.createTextNode(child);
+    }
 
-        element.appendChild(localChild);
-    });
+    element.appendChild(localChild);
+  });
 
-    return element;
+  return element;
 }

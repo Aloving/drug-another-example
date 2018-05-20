@@ -6,18 +6,18 @@
  * @return {Function} Функция дебаунс
  */
 export default function debounce(f, ms) {
-    let timer = null;
+  let timer = null;
 
-    return function fn(...args) {
-        const onComplete = () => {
-            f.apply(this, args);
-            timer = null;
-        };
-
-        if (timer) {
-            clearTimeout(timer);
-        }
-
-        timer = setTimeout(onComplete, ms);
+  return function fn(...args) {
+    const onComplete = () => {
+      f.apply(this, args);
+      timer = null;
     };
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(onComplete, ms);
+  };
 }

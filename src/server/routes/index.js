@@ -6,18 +6,18 @@ const users = [
   {
     id: 1,
     name: 'Алексей Картушин',
-    img: '/img/alex.png'
+    img: '/img/alex.png',
   },
   {
     id: 2,
     name: 'Алексей Картушин',
-    img: '/img/alex.png'
+    img: '/img/alex.png',
   },
   {
     id: 3,
     name: 'Алексей Картушин',
-    img: '/img/alex.png'
-  }
+    img: '/img/alex.png',
+  },
 ];
 
 // render index page
@@ -28,11 +28,20 @@ router.get('/', async (ctx) => {
 router.get('/api/users', async (ctx) => {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(users);
-    }, 2000)
-  })
+      if (Math.random() <= 0.7) {
+        resolve(users);
+        return;
+      }
 
-  ctx.body = await promise
+      reject();
+    }, 2000);
+  });
+
+  try {
+    ctx.body = await promise;
+  } catch (e) {
+    ctx.throw(400, 'error');
+  }
 });
 
 module.exports = router;

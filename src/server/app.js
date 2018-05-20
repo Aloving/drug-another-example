@@ -9,7 +9,6 @@ const json = require('koa-json');
 const bodyparser = require('koa-bodyparser');
 const koaStatic = require('koa-static');
 const logger = require('koa-logger');
-const debug = require('debug');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
