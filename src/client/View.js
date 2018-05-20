@@ -11,6 +11,17 @@ export default class View extends EventEmitter {
         this.container = document.querySelector('.main-container');
         this.counter = document.querySelector('.counter');
         this.loader = document.querySelector('.my-loader');
+        this.errorBlock = document.querySelector('.error-block');
+
+        this.tryAgain = document.querySelector('.try-again');
+
+        this.initListeners();
+    }
+
+    initListeners() {
+        this.tryAgain.addEventListener('click', () => {
+            this.emit('tryAgain');
+        });
     }
 
     init(usersCount) {
@@ -23,13 +34,21 @@ export default class View extends EventEmitter {
         this.search.disabled = condition;
     }
 
-    toggleLoader(condition) {
+    visabilityToggler(element, condition) {
         if (condition) {
-            this.loader.style.visibility = 'visible';
+            element.style.visibility = 'visible';
             return;
         } 
 
-        this.loader.style.visibility = 'hidden';
+        element.style.visibility = 'hidden';        
+    }
+
+    toggleLoader(condition) {
+        this.visabilityToggler(this.loader, condition)
+    }
+
+    toggleError(condition) {
+        this.visabilityToggler(this.errorBlock, condition)
     }
 
     updateCounter(count) {

@@ -20,15 +20,20 @@ export default class Controller {
     }
 
     fetchUsers() {
+        console.log('here');
         fetch('/api/users')
             .then((res) => res.json())
-            .then((users) => console.log(users));
+            .then((users) => this.model.update('users', users));
     }
 
     initListerens() {
         this.model.on('updated', (users) => {
             this.view.updateCounter(users.length);
             this.view.toggleSearch(!users.length);
+        });
+
+        this.view.on('tryAgain', () => {
+            this.fetchUsers();
         });
     }
 };

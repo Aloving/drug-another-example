@@ -26,7 +26,13 @@ router.get('/', async (ctx) => {
 });
 
 router.get('/api/users', async (ctx) => {
-  ctx.body = users;
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(users);
+    }, 2000)
+  })
+
+  ctx.body = await promise
 });
 
 module.exports = router;
