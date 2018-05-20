@@ -28,7 +28,7 @@ router.get('/', async (ctx) => {
 router.get('/api/users', async (ctx) => {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (Math.random() <= 0.7) {
+      if (Math.random() <= 0.8) {
         resolve(users);
         return;
       }

@@ -14,7 +14,7 @@ export default class Controller {
     this.onSearch = debounce(this.onSearch.bind(this), 250);
 
     this.initListerens();
-    this.init()
+    this.init();
   }
 
   init() {
@@ -24,14 +24,21 @@ export default class Controller {
   }
 
   fetchUsers() {
+    this.view.toggleLoader(true);
     fetch('/api/users')
       .then(res => res.json())
-      .then(users => this.model.update('users', users));
+      .then(users => this.model.update('users', users))
+      .catch(() => {
+        this.view.toggleLoader(false);
+        this.view.toggleError(true);
+      });
   }
 
   onSearch({ target: { value } }) {
     if (!value.length) {
-      this.view.filter([]);
+      this.view.filter(this.model
+        .read('users')
+        .map(user => user.id));
       return;
     }
 

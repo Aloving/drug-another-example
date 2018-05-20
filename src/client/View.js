@@ -16,15 +16,7 @@ export default class View extends EventEmitter {
     this.loader = document.querySelector('.my-loader');
     this.errorBlock = document.querySelector('.error-block');
     this.tryAgain = document.querySelector('.try-again');
-
-    this.initListeners();this.userElements = [];
-
-    this.search = document.querySelector('.search');
-    this.userContainer = document.querySelector('.user-container');
-    this.counter = document.querySelector('.counter');
-    this.loader = document.querySelector('.my-loader');
-    this.errorBlock = document.querySelector('.error-block');
-    this.tryAgain = document.querySelector('.try-again');
+    this.notFound = document.querySelector('.not-found');
 
     this.initListeners();
   }
@@ -34,7 +26,7 @@ export default class View extends EventEmitter {
       this.emit('tryAgain');
     });
 
-    this.search.addEventListener('keydown', (e) => this.emit('search', e));
+    this.search.addEventListener('keydown', e => this.emit('search', e));
   }
 
   init(usersCount) {
@@ -49,11 +41,20 @@ export default class View extends EventEmitter {
   }
 
   toggleLoader(condition) {
-    this.visabilityToggler(this.loader, condition)
+    this.visabilityToggler(this.loader, condition);
+
+    if (condition) {
+      this.visabilityToggler(this.errorBlock, false);
+      this.visabilityToggler(this.notFound, false);
+    }
+  }
+
+  toggleNotFound(condition) {
+    this.visabilityToggler(this.notFound, condition);
   }
 
   toggleError(condition) {
-    this.visabilityToggler(this.errorBlock, condition)
+    this.visabilityToggler(this.errorBlock, condition);
   }
 
   updateCounter(count) {
@@ -76,7 +77,7 @@ export default class View extends EventEmitter {
       const avatarElement = createElement(
         'div',
         {
-          className: 'avatar'
+          className: 'avatar',
         },
         avatarImage,
       );
@@ -99,14 +100,16 @@ export default class View extends EventEmitter {
 
   visabilityToggler(element, condition) {
     if (condition) {
-      element.style.visibility = 'visible';
+      element.classList.remove('display_none');
       return;
     }
 
-    element.style.visibility = 'hidden';
+    element.classList.add('display_none');
   }
 
   filter(data) {
+    this.toggleNotFound(false);
+
     const forHide = this.userElements.filter(item => !data.includes(+item.id));
     const forDisplay = this.userElements.filter(item => data.includes(+item.id));
 
@@ -117,5 +120,11 @@ export default class View extends EventEmitter {
     forDisplay.forEach((item) => {
       item.classList.remove('display_none');
     });
+
+    this.updateCounter(data.length);
+
+    if (!data.length) {
+      this.toggleNotFound(true);
+    }
   }
 }
