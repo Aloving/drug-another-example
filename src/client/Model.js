@@ -1,4 +1,4 @@
-import { EventEmitter } from './helpers';
+import { EventEmitter, createElement } from './helpers';
   
 /**
  * Model - Базовый класс модели
@@ -12,6 +12,13 @@ export default class Model extends EventEmitter {
 
     read(field) {
         return this[field];
+    }
+
+    searchBy({modelField, searchField, value}) {
+        return this[modelField].filter((item) => {
+            const itemField = item[searchField].toLowerCase();
+            return !!~itemField.indexOf(value.toLowerCase());
+        });
     }
 
     update(field, data) {

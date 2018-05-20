@@ -6,17 +6,17 @@ const users = [
   {
     id: 1,
     name: 'Алексей Картушин',
-    avatar: '/img/alex.png'
+    img: '/img/alex.png'
   },
   {
     id: 2,
     name: 'Алексей Картушин',
-    avatar: '/img/alex.png'
+    img: '/img/alex.png'
   },
   {
     id: 3,
     name: 'Алексей Картушин',
-    avatar: '/img/alex.png'
+    img: '/img/alex.png'
   }
 ];
 

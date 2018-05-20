@@ -1,3 +1,5 @@
+import { debounce } from './helpers';
+
 /**
  * Controller - Базовый класс контроллера
  *
@@ -8,6 +10,8 @@ export default class Controller {
     constructor(model, view) {
         this.model = model;
         this.view = view;
+
+        this.onSearch = debounce(this.onSearch.bind(this), 250);
 
         this.initListerens();
         this.init()
@@ -20,20 +24,41 @@ export default class Controller {
     }
 
     fetchUsers() {
-        console.log('here');
         fetch('/api/users')
             .then((res) => res.json())
             .then((users) => this.model.update('users', users));
     }
 
+    onSearch(e) {
+        const value = e.target.value;
+
+        if (!value.length) {
+            this.view.filter([]);
+            return;
+        }
+
+        const filtered = this.model
+            .searchBy({
+                modelField: 'users',
+                searchField: 'name',
+                value
+            })
+            .map((user) => user.id);
+
+        this.view.filter(filtered);
+        this.view.updateCounter(filtered.length);
+    }
+
     initListerens() {
         this.model.on('updated', (users) => {
-            this.view.updateCounter(users.length);
-            this.view.toggleSearch(!users.length);
+            this.view.onUpdateList(users.length);
+            this.view.createUserList(users);
         });
 
         this.view.on('tryAgain', () => {
             this.fetchUsers();
         });
+
+        this.view.on('search', this.onSearch);
     }
 };
